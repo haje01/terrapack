@@ -2,7 +2,7 @@
 
 This is an example recipe for simple nginx web site.
 
-Edit `.tfvars` file like this:
+Edit an `.tfvars` file like this:
 
     proj_prefix = "sw_[DEPLOY ENVIRONMENT]"
     proj_desc = "SimpleWeb [DEPLOY ENVIRONMENT]"
@@ -17,7 +17,8 @@ Edit `.tfvars` file like this:
     developer_cidr = "[DEVELOPER'S CIDR FOR SSH CONNECT]"
 
 
-Then save the file. I recommend naming it with REGION + DENV style. Like this:
+Then save the file. I recommend naming it with deploy region + deploy
+environment(dev, qa, production, ...) style. Like this:
 
     virginia_dev.tfvars
 
@@ -28,4 +29,4 @@ Test your site:
 
 And, apply it:
 
-    terraform plan -var-file=virginia_dev.tfvars
+    terraform apply -var-file=virginia_dev.tfvars
