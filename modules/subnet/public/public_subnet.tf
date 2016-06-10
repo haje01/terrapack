@@ -2,7 +2,7 @@
     Public subnet
 */
 
-variable "project" {}
+variable "proj_prefix" {}
 variable "aws_default_az" {}
 variable "public_subnet_cidr" { default = "10.0.0.0/24" }
 variable "aws_vpc_id" {}
@@ -15,12 +15,10 @@ resource "aws_subnet" "public" {
     availability_zone = "${var.aws_default_az}"
 
     tags {
-        Name = "${var.project}-public"
-        Project = "${var.project}"
+        Name = "${var.proj_prefix}-public"
     }
 }
-
-output "public_subnet_id" { value = "${aws_subnet.public.id}" }
+output "subnet_id" { value = "${aws_subnet.public.id}" }
 
 
 resource "aws_internet_gateway" "default" {
@@ -37,7 +35,7 @@ resource "aws_route_table" "public" {
     }
 
     tags {
-        Name = "${var.project}-public"
+        Name = "${var.proj_prefix}-public"
     }
 }
 

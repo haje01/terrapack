@@ -2,11 +2,11 @@
     VPC with Public & Private subnets
 */
 
-variable "project" {}
+variable "proj_prefix" {}
 
 variable "aws_key_name" {}
 variable "aws_default_az" {}
-variable "aws_default_instance" {}
+variable "bastion_instance_type" {}
 
 variable "vpc_cidr" { default = "10.0.0.0/16" }
 variable "developer_cidr" {}
@@ -16,15 +16,15 @@ resource "aws_vpc" "default" {
     cidr_block = "${var.vpc_cidr}"
     enable_dns_hostnames = true
     tags {
-        Name = "${var.project}-default"
-        Project = "${var.project}"
+        Name = "${var.proj_prefix}"
     }   
 }   
+output "vpc_id" { value = "${aws_vpc.default.id}" }
 
 
 module "public_subnet" {
     source = "../../../modules/subnet/public/"
-    project = "${var.project}"
+    proj_prefix = "${var.proj_prefix}"
     aws_vpc_id = "${aws_vpc.default.id}"
     aws_default_az = "${var.aws_default_az}"
 }
@@ -32,14 +32,14 @@ module "public_subnet" {
 
 module "private_subnet" {
     source = "../../../modules/subnet/private/"
-    project = "${var.project}"
+    proj_prefix = "${var.proj_prefix}"
 
     aws_key_name = "${aws_key_name}"
     aws_vpc_id = "${aws_vpc.default.id}"
     aws_default_az = "${var.aws_default_az}"
-    aws_default_instance = "${var.aws_default_instance}"
+    bastion_instance_type = "${var.bastion_instance_type}"
 
     vpc_cidr = "${var.vpc_cidr}"
     developer_cidr = "${var.developer_cidr}"
-    public_subnet_id = "${module.public_subnet.public_subnet_id}"
+    public_subnet_id = "${module.public_subnet.subnet_id}"
 }

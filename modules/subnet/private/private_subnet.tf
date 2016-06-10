@@ -2,12 +2,13 @@
     Private subnet
 */
 
-variable "project" {}
+variable "proj_prefix" {}
+variable "proj_desc" {}
 
 variable "aws_key_name" {}
 variable "aws_vpc_id" {}
 variable "aws_default_az" {}
-variable "aws_default_instance" {}
+variable "bastion_instance_type" {}
 
 variable "private_subnet_cidr" { default = "10.0.1.0/24" }
 variable "vpc_cidr" {}
@@ -22,10 +23,10 @@ resource "aws_subnet" "private" {
     availability_zone = "${var.aws_default_az}"
         
     tags {
-        Name = "${var.project}-private"
-        Project = "${var.project}"
+        Name = "${var.proj_prefix}-private"
     }
 }       
+output "subnet_id" { value = "${aws_subnet.private.id}" }
         
         
 resource "aws_route_table" "private" {
@@ -38,7 +39,7 @@ resource "aws_route_table" "private" {
     }   
         
     tags {
-        Name = "${var.project}-private"
+        Name = "${var.proj_prefix}-private"
     }   
 }       
 
@@ -51,12 +52,13 @@ resource "aws_route_table_association" "private" {
 
 module "bastion" {
     source = "../../../modules/bastion"
-    project = "${var.project}"
+    proj_prefix = "${var.proj_prefix}"
+    proj_desc = "${var.proj_desc}"
 
     aws_key_name = "${var.aws_key_name}"
     aws_default_az = "${var.aws_default_az}"
-    aws_default_instance = "${var.aws_default_instance}"
     aws_vpc_id = "${var.aws_vpc_id}"
+    instance_type = "${var.bastion_instance_type}"
 
     vpc_cidr = "${var.vpc_cidr}"
     developer_cidr = "${var.developer_cidr}"
