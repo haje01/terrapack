@@ -2,7 +2,7 @@
 
 This is an example recipe for simple nginx web site.
 
-Edit an `.tfvars` file like this:
+Edit a `.tfvars` file like this:
 
     proj_prefix = "sw_[DEPLOY ENVIRONMENT]"
     proj_desc = "SimpleWeb [DEPLOY ENVIRONMENT]"
