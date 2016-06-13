@@ -3,6 +3,7 @@
 */
 variable proj_prefix {}
 variable proj_desc {}
+variable proj_owner {}
 
 variable aws_key_name {}
 variable aws_key_path {}
@@ -69,6 +70,7 @@ resource "aws_instance" "web" {
     tags {
         Name = "${var.proj_prefix}-web"
         Desc = "${var.proj_desc}"
+        Owner = "${var.proj_owner}"
     }
 
     provisioner "remote-exec" {

@@ -4,6 +4,7 @@
 
 variable "proj_prefix" {}
 variable "proj_desc" {}
+variable "proj_owner" {}
 
 variable "aws_key_name" {}
 variable "aws_vpc_id" {}
@@ -78,6 +79,7 @@ resource "aws_instance" "bastion" {
     tags {
         Name = "${var.proj_prefix}-bastion"
         Desc = "${var.proj_desc}"
+        Owner = "${var.proj_owner}"
     }
 }
 

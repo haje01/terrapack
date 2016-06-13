@@ -1,5 +1,6 @@
 proj_prefix = "sw_dev"
 proj_desc = "SimpleWeb Dev"
+proj_owner = "haje01@webzen.com"
 
 aws_region = "ap-northeast-2"
 aws_default_az = "ap-northeast-2a"
