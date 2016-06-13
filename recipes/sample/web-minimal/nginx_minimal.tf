@@ -9,7 +9,7 @@ variable "proj_owner" {}
 variable "aws_key_path" {}
 variable "aws_key_name" {}
 variable "aws_region" {}
-variable "aws_default_az" {}
+variable "aws_availability_zones" {}
 variable "default_instance_type" {}
 variable "developer_cidr" {}
 
@@ -20,25 +20,26 @@ provider "aws" {
 
 
 module "public_only_vpc" {
-    source = "../../modules/vpc/public_only"
+    source = "../../../modules/vpc/public_only"
     proj_prefix = "${var.proj_prefix}"
-    aws_default_az = "${var.aws_default_az}"
+    aws_availability_zones = "${split(",",var.aws_availability_zones)}"
+    subnet_count = 1
 }
 
 
 module "ubuntu_ami" {
-  source = "../../modules/ami/ubuntu"
+  source = "../../../modules/ami/ubuntu"
   region = "${var.aws_region}"
 }
 
 
 module "web" {
-    source = "../../modules/sample/nginx"
+    source = "../../../modules/sample/nginx_minimal"
     proj_prefix = "${var.proj_prefix}"
     proj_desc = "${var.proj_desc}"
     proj_owner = "${var.proj_owner}"
 
-    aws_default_az = "${var.aws_default_az}"
+    aws_default_az = "${element(split(",", var.aws_availability_zones), 0)}"
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 

@@ -3,7 +3,7 @@ proj_desc = "SimpleWeb Dev"
 proj_owner = "haje01@webzen.com"
 
 aws_region = "ap-northeast-2"
-aws_default_az = "ap-northeast-2a"
+aws_availability_zones = "ap-northeast-2a"
 aws_alter_az = "ap-northeast-2c"
 aws_key_path = "~/.ssh/wzdat-seoul.pem"
 aws_key_name = "wzdat-seoul"

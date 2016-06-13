@@ -3,16 +3,20 @@
 */
 
 variable "proj_prefix" {}
-variable "aws_default_az" {}
-variable "public_subnet_cidr" { default = "10.0.0.0/24" }
+
+variable "aws_availability_zones" {}
 variable "aws_vpc_id" {}
+
+variable "public_subnet_cidr" { default = "10.0.0.0/24" }
+variable "count" { default = 1 }
 
 
 resource "aws_subnet" "public" {
     vpc_id = "${var.aws_vpc_id}"
+    count = "${var.count}"
 
     cidr_block = "${var.public_subnet_cidr}"
-    availability_zone = "${var.aws_default_az}"
+    availability_zone = "${element(var.aws_availability_zones, count.index)}"
 
     tags {
         Name = "${var.proj_prefix}-public"
