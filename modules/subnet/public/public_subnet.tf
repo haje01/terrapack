@@ -7,22 +7,21 @@ variable "proj_prefix" {}
 variable "aws_availability_zones" {}
 variable "aws_vpc_id" {}
 
-variable "public_subnet_cidr" { default = "10.0.0.0/24" }
+variable "subnet_cidrs" { default="10.0.0.0/24,10.0.1.0/24" }
 variable "count" { default = 1 }
 
 
 resource "aws_subnet" "public" {
     vpc_id = "${var.aws_vpc_id}"
     count = "${var.count}"
-
-    cidr_block = "${var.public_subnet_cidr}"
+    cidr_block = "${element(split(",", var.subnet_cidrs), count.index)}"
     availability_zone = "${element(var.aws_availability_zones, count.index)}"
 
     tags {
         Name = "${var.proj_prefix}-public"
     }
 }
-output "subnet_id" { value = "${aws_subnet.public.id}" }
+output "subnet_ids" { value = "${join(",", aws_subnet.public.*.id)}" }
 
 
 resource "aws_internet_gateway" "default" {
@@ -45,6 +44,7 @@ resource "aws_route_table" "public" {
 
 
 resource "aws_route_table_association" "public" {
-    subnet_id = "${aws_subnet.public.id}"
+    count = "${var.count}"
+    subnet_id = "${element(aws_subnet.public.*.id, count.index)}"
     route_table_id = "${aws_route_table.public.id}"
 }

@@ -6,6 +6,7 @@ variable "proj_prefix" {}
 variable "vpc_cidr" { default = "10.0.0.0/16" }
 variable "aws_availability_zones" {}
 variable "subnet_count" { default = 1 }
+variable "subnet_cidrs" { default="10.0.0.0/24,10.0.1.0/24" }
 
 
 resource "aws_vpc" "default" {
@@ -24,5 +25,6 @@ module "public_subnet" {
     aws_vpc_id = "${aws_vpc.default.id}"
     aws_availability_zones = "${var.aws_availability_zones}"
     count = "${var.subnet_count}"
+    subnet_cidrs = "${var.subnet_cidrs}"
 }
-output "subnet_id" { value = "${module.public_subnet.subnet_id}" }
+output "subnet_ids" { value = "${module.public_subnet.subnet_ids}" }

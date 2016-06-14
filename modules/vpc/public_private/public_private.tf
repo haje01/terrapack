@@ -41,5 +41,5 @@ module "private_subnet" {
 
     vpc_cidr = "${var.vpc_cidr}"
     developer_cidr = "${var.developer_cidr}"
-    public_subnet_id = "${module.public_subnet.subnet_id}"
+    public_subnet_id = "${module.public_subnet.subnet_ids}"
 }

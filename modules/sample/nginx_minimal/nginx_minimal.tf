@@ -77,6 +77,8 @@ resource "aws_instance" "web" {
         inline = [
             "sudo apt-get -y update",
             "sudo apt-get -y install nginx",
+            "export HOSTNAME=`hostname`",
+            "sudo sed -i 's/nginx!/'$HOSTNAME'/g' /usr/share/nginx/html/index.html",
             "sudo service nginx start"
         ]
         connection {
