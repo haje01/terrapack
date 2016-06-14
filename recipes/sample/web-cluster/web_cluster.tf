@@ -50,7 +50,7 @@ module "web" {
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_only_vpc.vpc_id}"
     subnet_ids = "${split(",", module.public_only_vpc.subnet_ids)}"
-    instance_count = 2
+    instance_count = 3
 }
 output "web_subnet_ids" { value = "${module.web.web_subnet_ids}" }
 output "vpc_subnet_ids" { value = "${module.public_only_vpc.subnet_ids}" }

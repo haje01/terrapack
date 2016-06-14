@@ -60,49 +60,6 @@ resource "aws_security_group" "web" {
 }
 
 
-/*resource "aws_security_group" "elb" {*/
-    /*name = "${var.proj_prefix}-elb"*/
-    /*vpc_id = "${var.vpc_id}"*/
-
-    /*ingress {*/
-        /*from_port = 80*/
-        /*to_port = 80*/
-        /*protocol = "tcp"*/
-        /*cidr_blocks = ["0.0.0.0/0"]*/
-    /*}*/
-
-    /*egress {*/
-        /*from_port = 0*/
-        /*to_port = 0*/
-        /*protocol = "-1"*/
-        /*cidr_blocks = ["0.0.0.0/0"]*/
-    /*}*/
-
-    /*tags {*/
-        /*Name = "${var.proj_prefix}-elb"*/
-    /*}*/
-/*}*/
-
-
-/*resource "aws_elb" "web" {*/
-    /*name = "${var.proj_prefix}-elb"*/
-    /*subnets = ["${var.subnet_ids}"]*/
-    /*security_groups = ["${aws_security_group.elb.id}"]*/
-    /*cross_zone_load_balancing = true*/
-
-    /*listener {*/
-        /*instance_port = 80*/
-        /*instance_protocol = "http"*/
-        /*lb_port = 80*/
-        /*lb_protocol = "http"*/
-    /*}*/
-
-    /*instances = [*/
-        /*"${aws_instance.web.*.id}"*/
-    /*]*/
-/*}*/
-
-
 module "elb" {
     source = "../../../modules/elb"
     proj_prefix = "${var.proj_prefix}"
@@ -111,6 +68,9 @@ module "elb" {
     vpc_id = "${var.vpc_id}"
     subnet_ids = "${var.subnet_ids}"
     instances = "${join(",", aws_instance.web.*.id)}"
+    user_cidr = "${var.user_cidr}"
+    from_port = 80
+    to_port = 80
 }
 
 
