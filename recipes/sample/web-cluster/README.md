@@ -30,3 +30,8 @@ Test your site:
 And, apply it:
 
     terraform apply -var-file=virginia_dev.tfvars
+
+
+This site has private subnet, where redis instance is located. You can log into the redis instance by [SSH agent forwarding](https://blogs.aws.amazon.com/security/post/Tx3N8GFK85UN1G6/Securely-connect-to-Linux-instances-running-in-a-private-Amazon-VPC)
+
+    ssh -A ec2-user@[BASTION IP] -i [YOUR KEY PATH]
