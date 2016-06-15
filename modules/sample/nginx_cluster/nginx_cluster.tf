@@ -58,6 +58,7 @@ resource "aws_security_group" "web" {
         Owner = "${var.proj_owner}"
     }
 }
+output "security_group" { value = "${aws_security_group.web.id}" }
 
 
 module "elb" {
@@ -66,7 +67,7 @@ module "elb" {
     proj_desc = "${var.proj_desc}"
     proj_owner = "${var.proj_owner}"
     vpc_id = "${var.vpc_id}"
-    subnet_ids = "${var.subnet_ids}"
+    subnet_ids = "${split(",", var.subnet_ids)}"
     instances = "${join(",", aws_instance.web.*.id)}"
     user_cidr = "${var.user_cidr}"
     from_port = 80
@@ -76,7 +77,6 @@ module "elb" {
 
 resource "aws_instance" "web" {
     ami = "${var.ami_id}"
-    availability_zone = "${var.aws_default_az}"
     instance_type = "${var.instance_type}"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.web.id}"]
@@ -84,11 +84,11 @@ resource "aws_instance" "web" {
     source_dest_check = false
 
     count = "${var.instance_count}"
-    subnet_id = "${element(var.subnet_ids, count.index)}"
-    availability_zone = "${element(var.aws_availability_zones, count.index)}"
+    subnet_id = "${element(split(",", var.subnet_ids), count.index)}"
+    availability_zone = "${element(split(",", var.aws_availability_zones), count.index)}"
 
     tags {
-        Name = "${var.proj_prefix}-web${count.index}"
+        Name = "${var.proj_prefix}-web${count.index + 1}"
         Desc = "${var.proj_desc}"
         Owner = "${var.proj_owner}"
     }
@@ -107,4 +107,4 @@ resource "aws_instance" "web" {
         }
     }
 }
-output "web_subnet_ids" { value = "${join(",", var.subnet_ids)}" }
+output "web_subnet_ids" { value = "${var.subnet_ids}" }

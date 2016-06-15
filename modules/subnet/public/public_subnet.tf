@@ -15,10 +15,10 @@ resource "aws_subnet" "public" {
     vpc_id = "${var.aws_vpc_id}"
     count = "${var.count}"
     cidr_block = "${element(split(",", var.subnet_cidrs), count.index)}"
-    availability_zone = "${element(var.aws_availability_zones, count.index)}"
+    availability_zone = "${element(split(",", var.aws_availability_zones), count.index)}"
 
     tags {
-        Name = "${var.proj_prefix}-public"
+        Name = "${var.proj_prefix}-public${count.index + 1}"
     }
 }
 output "subnet_ids" { value = "${join(",", aws_subnet.public.*.id)}" }

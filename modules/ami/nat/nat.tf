@@ -7,5 +7,4 @@ variable "amis" {
         ap-northeast-2 = "ami-0d32fa63"  # Seoul
     }   
 }       
-
 output id { value = "${lookup(var.amis, var.region)}" }

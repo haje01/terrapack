@@ -1,5 +1,5 @@
 /*
-    Nginx minimal sample recipe
+    Web minimal sample recipe
 */
 
 variable "proj_prefix" {}
@@ -22,7 +22,7 @@ provider "aws" {
 module "public_only_vpc" {
     source = "../../../modules/vpc/public_only"
     proj_prefix = "${var.proj_prefix}"
-    aws_availability_zones = "${split(",",var.aws_availability_zones)}"
+    aws_availability_zones = "${var.aws_availability_zones}"
     subnet_count = 1
 }
 

@@ -1,5 +1,5 @@
 /*
-    Nginx cluster sample recipe
+    Web cluster sample recipe
 */
 
 variable "proj_prefix" {}
@@ -23,7 +23,7 @@ provider "aws" {
 module "public_only_vpc" {
     source = "../../../modules/vpc/public_only"
     proj_prefix = "${var.proj_prefix}"
-    aws_availability_zones = "${split(",", var.aws_availability_zones)}"
+    aws_availability_zones = "${var.aws_availability_zones}"
     subnet_count = 2
 }
 output "public_subnet_ids" { value = "${module.public_only_vpc.subnet_ids}" }
@@ -41,7 +41,7 @@ module "web" {
     proj_desc = "${var.proj_desc}"
     proj_owner = "${var.proj_owner}"
 
-    aws_availability_zones = "${split(",", var.aws_availability_zones)}"
+    aws_availability_zones = "${var.aws_availability_zones}"
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 
@@ -49,7 +49,7 @@ module "web" {
     developer_cidr = "${var.developer_cidr}"
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_only_vpc.vpc_id}"
-    subnet_ids = "${split(",", module.public_only_vpc.subnet_ids)}"
+    subnet_ids = "${module.public_only_vpc.subnet_ids}"
     instance_count = 3
 }
 output "web_subnet_ids" { value = "${module.web.web_subnet_ids}" }
