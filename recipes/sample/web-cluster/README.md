@@ -1,6 +1,6 @@
-# Minimal web recipe
+# Clustered web recipe
 
-This is an example recipe for minimal nginx web site.
+This is an example recipe for clustered nginx web site.
 
 Edit a `.tfvars` file like this:
 
@@ -22,7 +22,6 @@ Then save the file. I recommend naming it with deploy region + deploy
 environment(dev, qa, production, ...) style. Like this:
 
     virginia_dev.tfvars
-
 
 Test your site:
 

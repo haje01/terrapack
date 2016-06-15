@@ -1,11 +1,11 @@
-# Minimal web recipe
+# Web + Redis sample recipe
 
-This is an example recipe for minimal nginx web site.
+This is an example recipe for clusterd nginx + redis web site.
 
 Edit a `.tfvars` file like this:
 
-    proj_prefix = "mw_[DEPLOY ENVIRONMENT]"
-    proj_desc = "Minimal Web [DEPLOY ENVIRONMENT]"
+    proj_prefix = "wr_[DEPLOY ENVIRONMENT]"
+    proj_desc = "Web + Redis [DEPLOY ENVIRONMENT]"
     proj_owner = "[OWNER'S EMAIL ADDRESS]"
 
     aws_region = "[AWS REGION]"
