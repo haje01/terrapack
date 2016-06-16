@@ -10,8 +10,10 @@ variable "aws_key_path" {}
 variable "aws_key_name" {}
 variable "aws_region" {}
 variable "aws_availability_zones" {}
+
 variable "default_instance_type" {}
 variable "developer_cidr" {}
+variable "nginx_ami" {}
 
 
 provider "aws" {
@@ -27,12 +29,6 @@ module "public_only_vpc" {
 }
 
 
-module "ubuntu_ami" {
-  source = "../../../modules/ami/ubuntu"
-  region = "${var.aws_region}"
-}
-
-
 module "web" {
     source = "../../../modules/sample/nginx_minimal"
     proj_prefix = "${var.proj_prefix}"
@@ -43,7 +39,7 @@ module "web" {
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 
-    ami_id = "${module.ubuntu_ami.id}"
+    nginx_ami = "${var.nginx_ami}"
     developer_cidr = "${var.developer_cidr}"
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_only_vpc.vpc_id}"

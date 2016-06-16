@@ -15,7 +15,7 @@ variable bastion_security_group {}
 variable instance_type {}
 variable subnet_ids {}
 variable vpc_id {}
-variable ami_id {}
+variable redis_ami {}
 
 
 resource "aws_security_group" "redis" {
@@ -61,7 +61,7 @@ resource "aws_security_group" "redis" {
 
 
 resource aws_instance "redis" {
-    ami = "${var.ami_id}"
+    ami = "${var.redis_ami}"
     instance_type = "${var.instance_type}"
     key_name = "${var.aws_key_name}"
     vpc_security_group_ids = ["${aws_security_group.redis.id}"]

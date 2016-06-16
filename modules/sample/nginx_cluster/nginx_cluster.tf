@@ -9,56 +9,13 @@ variable aws_key_name {}
 variable aws_key_path {}
 variable aws_availability_zones {}
 
+variable security_group {}
 variable user_cidr { default = "0.0.0.0/0" }
-variable developer_cidr {}
 variable instance_type {}
 variable subnet_ids {}
 variable vpc_id {}
-variable ami_id {}
+variable nginx_ami {}
 variable instance_count {}
-
-
-resource "aws_security_group" "web" {
-    name = "${var.proj_prefix}-web"
-    description = "Allow incoming HTTP connections"
-
-    ingress {
-        from_port = 80
-        to_port = 80
-        protocol = "tcp"
-        cidr_blocks = ["${var.user_cidr}"]
-    }
-
-    ingress {
-        from_port = 22
-        to_port = 22
-        protocol = "tcp"
-        cidr_blocks = ["${var.developer_cidr}"]
-    }
-
-    ingress {
-        from_port = -1
-        to_port = -1
-        protocol = "icmp"
-        cidr_blocks = ["${var.user_cidr}"]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    vpc_id = "${var.vpc_id}"
-
-    tags {
-        Name = "${var.proj_prefix}-web"
-        Desc = "${var.proj_desc}"
-        Owner = "${var.proj_owner}"
-    }
-}
-output "security_group" { value = "${aws_security_group.web.id}" }
 
 
 module "elb" {
@@ -76,10 +33,10 @@ module "elb" {
 
 
 resource "aws_instance" "web" {
-    ami = "${var.ami_id}"
+    ami = "${var.nginx_ami}"
     instance_type = "${var.instance_type}"
     key_name = "${var.aws_key_name}"
-    vpc_security_group_ids = ["${aws_security_group.web.id}"]
+    vpc_security_group_ids = ["${var.security_group}"]
     associate_public_ip_address = true
     source_dest_check = false
 
@@ -91,20 +48,6 @@ resource "aws_instance" "web" {
         Name = "${var.proj_prefix}-web${count.index + 1}"
         Desc = "${var.proj_desc}"
         Owner = "${var.proj_owner}"
-    }
-
-    provisioner "remote-exec" {
-        inline = [
-            "sudo apt-get -y update",
-            "sudo apt-get -y install nginx",
-            "export HOSTNAME=`hostname`",
-            "sudo sed -i 's/nginx!/'$HOSTNAME'/g' /usr/share/nginx/html/index.html",
-            "sudo service nginx start"
-        ]
-        connection {
-            user = "ubuntu"
-            key_file = "${var.aws_key_path}"
-        }
     }
 }
 output "web_subnet_ids" { value = "${var.subnet_ids}" }

@@ -11,6 +11,7 @@ variable "aws_key_name" {}
 variable "aws_region" {}
 variable "aws_availability_zones" {}
 
+variable "nginx_ami" {}
 variable "default_instance_type" {}
 variable "developer_cidr" {}
 
@@ -29,9 +30,14 @@ module "public_only_vpc" {
 output "public_subnet_ids" { value = "${module.public_only_vpc.subnet_ids}" }
 
 
-module "ubuntu_ami" {
-  source = "../../../modules/ami/ubuntu"
-  region = "${var.aws_region}"
+module "security_group" {
+    source = "../../../modules/securitygroup/web/developer"
+    proj_prefix = "${var.proj_prefix}"
+    proj_desc = "${var.proj_desc}"
+    proj_owner = "${var.proj_owner}"
+    
+    developer_cidr = "${var.developer_cidr}"
+    vpc_id = "${module.public_only_vpc.vpc_id}"
 }
 
 
@@ -45,11 +51,11 @@ module "web" {
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 
-    ami_id = "${module.ubuntu_ami.id}"
-    developer_cidr = "${var.developer_cidr}"
+    nginx_ami = "${var.nginx_ami}"
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_only_vpc.vpc_id}"
     subnet_ids = "${module.public_only_vpc.subnet_ids}"
+    security_group = "${module.security_group.id}"
     instance_count = 3
 }
 output "web_subnet_ids" { value = "${module.web.web_subnet_ids}" }

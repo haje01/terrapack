@@ -13,6 +13,8 @@ variable "aws_availability_zones" {}
 
 variable "default_instance_type" {}
 variable "developer_cidr" {}
+variable "redis_ami" {}
+variable "nginx_ami" {}
 
 
 provider "aws" {
@@ -35,12 +37,16 @@ module "public_private_vpc" {
     public_subnet_count = 2
     private_subnet_count = 1
 }
-output "public_subnet_ids" { value = "${module.public_private_vpc.public_subnet_ids}" }
 
 
-module "ubuntu_ami" {
-  source = "../../../modules/ami/ubuntu"
-  region = "${var.aws_region}"
+module "security_group" {
+    source = "../../../modules/securitygroup/web/developer"
+    proj_prefix = "${var.proj_prefix}"
+    proj_desc = "${var.proj_desc}"
+    proj_owner = "${var.proj_owner}"
+    
+    developer_cidr = "${var.developer_cidr}"
+    vpc_id = "${module.public_private_vpc.vpc_id}"
 }
 
 
@@ -54,8 +60,8 @@ module "web" {
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 
-    ami_id = "${module.ubuntu_ami.id}"
-    developer_cidr = "${var.developer_cidr}"
+    nginx_ami = "${var.nginx_ami}"
+    security_group = "${module.security_group.id}"
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_private_vpc.vpc_id}"
     subnet_ids = "${module.public_private_vpc.public_subnet_ids}"
@@ -73,8 +79,8 @@ module "redis" {
     aws_key_name = "${var.aws_key_name}"
     aws_key_path = "${var.aws_key_path}"
 
-    ami_id = "${module.ubuntu_ami.id}"
-    app_security_group = "${module.web.security_group}"
+    redis_ami = "${var.redis_ami}"
+    app_security_group = "${module.security_group.id}"
     bastion_security_group = "${module.public_private_vpc.bastion_security_group}"
     instance_type = "${var.default_instance_type}"
     vpc_id = "${module.public_private_vpc.vpc_id}"
