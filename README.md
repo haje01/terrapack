@@ -1,3 +1,3 @@
-# terrapod
+# terrapack
 
-Terraform modules & recipes
+Terraform & packer modules & recipes
