@@ -5,8 +5,10 @@
         "aws_region": "",
         "aws_instance_type": "",
         "source_ami": "",
-        "ami_name": "",
-        "ssh_username": ""
+        "ssh_username": "",
+        "proj_desc": "",
+        "proj_owner": "",
+        "deploy_env": ""
     },
 
     "builders": [{
@@ -17,7 +19,8 @@
         "source_ami": "{{user `source_ami`}}",
         "instance_type": "{{user `aws_instance_type`}}",
         "ssh_username": "{{user `ssh_username`}}",
-        "ami_name": "{{user `ami_name`}}"
+        "ami_nare": "{{user `proj_prefix`}}-{{user `deploy_env`}}-redis",
+        "tags": {"Desc": "{{user `proj_desc`}}", "Owner": "{{user `proj_owner`}}"}
     }],
 
     "provisioners": [{

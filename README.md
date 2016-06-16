@@ -1,4 +1,4 @@
-# terrapack
+# terrapak
 
 Terraform + packer modules & recipes
 
